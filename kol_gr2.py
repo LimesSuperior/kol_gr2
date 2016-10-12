@@ -1,4 +1,4 @@
-#Write a library that contains a class that can represent any 2𝑥2 real matrice. 
+#Write a library that contains a class that can represent any 2x2 real matrice. 
 #Include two functions to calculate the sum and product of two matrices. 
 #Next, write a program that imports this library module and use it to perform calculations.
 #Examples:
@@ -21,3 +21,33 @@
 #
 #Delete these comments before commit!
 #Good luck.
+
+#!/usr/bin/python
+
+
+from matrix import Matrix
+
+
+def main():
+
+	print "matrices"
+
+	mat_1, mat_2 = [], []
+		
+	for i in range(0, 3): # wiersze
+		mat_1.append([])
+		mat_2.append([])
+		for j in range(0, 3): # kolumny
+			mat_1[i].append(2)
+			mat_2[i].append(3)
+
+	matrix_1 = Matrix(3, mat_1)
+	matrix_2 = Matrix(3, mat_2)
+
+	matrix_1.print_out()
+
+
+if __name__ == "__main__":
+	main()
+
+
