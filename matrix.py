@@ -1,43 +1,70 @@
 #!/usr/bin/python
 
 
+class MatrixError(Exception):
+	pass
+
 class Matrix(object):
-# macierz kwadratwa NxN
 
-	_matrix = [] # macierz w postaci listy N list o rozmiarze N kazda
+	def __init__(self, n, fill=False, fill_value=0):
 
-	# N - wymiar macierzy
-	# matrix - macierz w postaci listy N list o rozmiarze N kazda
-	def __init__(self, N, matrix):
+		if type(fill) is not bool:
+			raise TypeError('Matrix __init__: fill parameter must be bool type')
 
-		self.N = N
+		if type(fill_value) is not float and type(fill_value) is not int:
+			raise TypeError('Matrix __init__: fill_value parameter must be float or int type')
 
-		# kopiowanie
-		for i in range(0, N): # wiersze
-			self._matrix.append([])
-			for j in range(0, N): # kolumny
-				self._matrix[i].append(matrix[i][j])
+		if fill:
+			self.rows = [[fill_value]*n for x in range(n)]
+		else:
+			self.rows = []
+		self.n = n
 
-	# mnozenie dwoch macierzy NxN
-	def multiply(self, second_matrix):
+	def __getitem__(self, index):
 
-		if self.N != second_matrix.N:
-			return
+		return self.rows[index]
+
+	def __setitem__(self, index, value):
+
+		self.rows[index] = value
+
+	def __add__(self, matrix):
+		
+		if self.n != matrix.n:
+			raise MatrixError, "Matrix __add__: Size must match"
+
+		result = Matrix(self.n, fill=True, fill_value=0)
+
+		for x in range(self.n):
+			row = [sum(value) for value in zip(self.rows[x], matrix[x])]
+			result[x] = row
+
+		return result
+
+	def __mul__(self, matrix):
+
+		if self.n != matrix.n:
+			raise MatrixError, "Matrix __add__: Size must match"
+        
+		transposed = matrix.transposed()
+		result = Matrix(self.n, fill=True)
+        
+		for x in range(self.n):
+			for y in range(transposed.n):
+				result[x][y] = sum([item[0]*item[1] for item in zip(self.rows[x], transposed[y])])
+
+		return result
+
+	def transposed(self):
+
+		matrix = Matrix(self.n, fill=True)
+		matrix.rows = [list(item) for item in zip(*self.rows)]
+
+		return matrix
+
+	def __str__(self):
+		s='\n'.join([' '.join([str(item) for item in row]) for row in self.rows])
+		return s + '\n'
 			
-		product_matrix = Matrix(self.N, tmp)
 
-		for i in range(0, N):
-			for j in range(0, N):
-				current_sum = 0
-				for k in range (0, N):
-					current_sum += self._matrix[i][k]  * second_matrix._matrix[k][j]
-
-		return product_matrix
-
-	def print_out(self):
-		for i in range(0, self.N): # wiersze
-			for j in range(0, self.N): # kolumny
-				print self._matrix[i]
-
-
-
+		 
